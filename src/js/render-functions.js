@@ -1,9 +1,9 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const lightbox = new SimpleLightbox('.gallery a');
 const galleryContainer = document.querySelector('.gallery');
-const loaderContainer = document.querySelector('.loader-container');
+const loader = document.querySelector('.loader');
+let lightbox; // Інстанс лайтбоксу
 
 export function createGallery(images) {
   const markup = images
@@ -15,24 +15,32 @@ export function createGallery(images) {
         likes,
         views,
         comments,
-        downloads,
+        downloads
       }) => `
-      <li class="photo-card">
+      <li>
         <a href="${largeImageURL}">
           <img src="${webformatURL}" alt="${tags}" loading="lazy" />
         </a>
         <div class="info">
-          <p><b>Likes:</b> ${likes}</p>
-          <p><b>Views:</b> ${views}</p>
-          <p><b>Comments:</b> ${comments}</p>
-          <p><b>Downloads:</b> ${downloads}</p>
+          <p>👍 ${likes}</p>
+          <p>👁️ ${views}</p>
+          <p>💬 ${comments}</p>
+          <p>⬇️ ${downloads}</p>
         </div>
       </li>`
     )
     .join('');
 
   galleryContainer.insertAdjacentHTML('beforeend', markup);
-  lightbox.refresh();
+
+  if (!lightbox) {
+    lightbox = new SimpleLightbox('.gallery a', {
+      captionsData: 'alt',
+      captionDelay: 250
+    });
+  } else {
+    lightbox.refresh();
+  }
 }
 
 export function clearGallery() {
@@ -40,10 +48,9 @@ export function clearGallery() {
 }
 
 export function showLoader() {
-  loaderContainer.innerHTML =
-    '<div class="ball-beat"><div></div><div></div><div></div></div>';
+  loader.removeAttribute('hidden');
 }
 
 export function hideLoader() {
-  loaderContainer.innerHTML = '';
+  loader.setAttribute('hidden', '');
 }

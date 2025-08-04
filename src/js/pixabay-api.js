@@ -10,6 +10,7 @@ export async function getImagesByQuery(query) {
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
+    per_page: 12
   };
 
   const response = await axios.get(BASE_URL, { params });
