@@ -1,9 +1,10 @@
-import SimpleLightbox from 'simplelightbox';
+// src/js/render-functions.js
+import SimpleLightbox from 'simplelightbox/dist/simple-lightbox.esm.js';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const galleryContainer = document.querySelector('.gallery');
 const loader = document.querySelector('.loader');
-let lightbox; // Інстанс лайтбоксу
+let lightbox = null;
 
 export function createGallery(images) {
   const markup = images
@@ -15,9 +16,9 @@ export function createGallery(images) {
         likes,
         views,
         comments,
-        downloads
+        downloads,
       }) => `
-      <li>
+      <li class="gallery-item">
         <a href="${largeImageURL}">
           <img src="${webformatURL}" alt="${tags}" loading="lazy" />
         </a>
@@ -36,7 +37,7 @@ export function createGallery(images) {
   if (!lightbox) {
     lightbox = new SimpleLightbox('.gallery a', {
       captionsData: 'alt',
-      captionDelay: 250
+      captionDelay: 250,
     });
   } else {
     lightbox.refresh();
@@ -48,9 +49,9 @@ export function clearGallery() {
 }
 
 export function showLoader() {
-  loader.removeAttribute('hidden');
+  loader.hidden = false;
 }
 
 export function hideLoader() {
-  loader.setAttribute('hidden', '');
+  loader.hidden = true;
 }
