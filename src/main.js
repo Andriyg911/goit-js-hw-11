@@ -1,54 +1,45 @@
-import './css/styles.css';
+// src/main.js
 import 'izitoast/dist/css/iziToast.min.css';
-
-import { getImagesByQuery } from './js/pixabay-api.js';
+import iziToast from 'izitoast';
+import PixabayApiService from './js/pixabay-api.js';
 import {
   createGallery,
   clearGallery,
   showLoader,
-  hideLoader
+  hideLoader,
 } from './js/render-functions.js';
 
-import iziToast from 'izitoast';
-
-const form = document.querySelector('.form');
-const input = form.elements['search-text'];
+const form = document.getElementById('search-form');
+const pixabayService = new PixabayApiService();
 
 form.addEventListener('submit', onSearch);
 
-async function onSearch(e) {
-  e.preventDefault();
-  const query = input.value.trim();
+async function onSearch(event) {
+  event.preventDefault();
+  const query = event.currentTarget.searchQuery.value.trim();
 
   if (!query) {
-    iziToast.warning({
-      message: 'Будь ласка, введіть пошуковий запит!',
-      position: 'topRight'
-    });
+    iziToast.info({ message: 'Введіть пошуковий запит!' });
     return;
   }
 
+  pixabayService.searchQuery = query;
+  pixabayService.resetPage();
   clearGallery();
-  showLoader();
 
   try {
-    const data = await getImagesByQuery(query);
+    showLoader();
+    const data = await pixabayService.fetchImages();
 
     if (data.hits.length === 0) {
-      iziToast.info({
-        message:
-          'Sorry, there are no images matching your search query. Please try again!',
-        position: 'topRight'
-      });
-    } else {
-      createGallery(data.hits);
+      iziToast.warning({ message: 'За вашим запитом нічого не знайдено.' });
+      return;
     }
+
+    createGallery(data.hits);
   } catch (error) {
-    console.error('Error fetching images:', error);
-    iziToast.error({
-      message: 'Something went wrong. Please try again later.',
-      position: 'topRight'
-    });
+    console.error(error);
+    iziToast.error({ message: 'Помилка завантаження зображень.' });
   } finally {
     hideLoader();
   }
