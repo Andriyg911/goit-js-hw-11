@@ -1,26 +1,23 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gallery Search</title>
-  <script type="module" crossorigin src="/goit-js-hw-11/assets/index-z9jaLZSU.js"></script>
-  <link rel="stylesheet" crossorigin href="/goit-js-hw-11/assets/index-Bg1f6fDn.css">
+  <script type="module" crossorigin src="/goit-js-hw-11/assets/index-D1zQsZhd.js"></script>
+  <link rel="stylesheet" crossorigin href="/goit-js-hw-11/assets/index-DGbgA77l.css">
 </head>
-<body>
 
+<body>
   <form class="form">
-    <input
-      type="text"
-      name="searchQuery"
-      placeholder="Пошук зображень..."
-      required
-    />
-    <button type="submit">Шукати</button>
-    <span class="loader" hidden></span>
+    <input type="text" name="search-text" placeholder="Пошук зображень..." required />
+    <button type="submit">Пошук</button>
   </form>
 
+  <span class="loader" hidden></span>
   <ul class="gallery"></ul>
 
 </body>
+
 </html>
