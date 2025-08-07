@@ -1,7 +1,10 @@
-// src/main.js
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import 'izitoast/dist/css/iziToast.min.css';
 import iziToast from 'izitoast';
-import PixabayApiService from './js/pixabay-api.js';
+import './css/styles.css';
+
+import { getImagesByQuery } from './js/pixabay-api.js';
 import {
   createGallery,
   clearGallery,
@@ -9,38 +12,39 @@ import {
   hideLoader,
 } from './js/render-functions.js';
 
-const form = document.getElementById('search-form');
-const pixabayService = new PixabayApiService();
+const form = document.querySelector('.form');
+const gallery = document.querySelector('.gallery');
+const loader = document.querySelector('.loader');
 
-form.addEventListener('submit', onSearch);
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const query = e.target.elements['search-text'].value.trim();
 
-async function onSearch(event) {
-  event.preventDefault();
-  const query = event.currentTarget.searchQuery.value.trim();
+  if (!query) return;
 
-  if (!query) {
-    iziToast.info({ message: 'Введіть пошуковий запит!' });
-    return;
-  }
-
-  pixabayService.searchQuery = query;
-  pixabayService.resetPage();
   clearGallery();
+  showLoader();
 
   try {
-    showLoader();
-    const data = await pixabayService.fetchImages();
+    const { hits } = await getImagesByQuery(query); // ✅ Виправлено
 
-    if (data.hits.length === 0) {
-      iziToast.warning({ message: 'За вашим запитом нічого не знайдено.' });
-      return;
+    if (hits.length === 0) {
+      iziToast.warning({
+        title: 'Увага',
+        message: 'Нічого не знайдено. Спробуйте інший запит.',
+        position: 'topRight',
+      });
+    } else {
+      createGallery(hits); // ✅ Передаємо масив
     }
-
-    createGallery(data.hits);
   } catch (error) {
+    iziToast.error({
+      title: 'Помилка',
+      message: 'Щось пішло не так. Спробуйте пізніше.',
+      position: 'topRight',
+    });
     console.error(error);
-    iziToast.error({ message: 'Помилка завантаження зображень.' });
   } finally {
     hideLoader();
   }
-}
+});

@@ -1,26 +1,22 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gallery Search</title>
-  <link rel="stylesheet" href="./css/styles.css" />
 </head>
-<body>
 
+<body>
   <form class="form">
-    <input
-      type="text"
-      name="searchQuery"
-      placeholder="Пошук зображень..."
-      required
-    />
-    <button type="submit">Шукати</button>
-    <span class="loader" hidden></span>
+    <input type="text" name="search-text" placeholder="Пошук зображень..." required />
+    <button type="submit">Пошук</button>
   </form>
 
+  <span class="loader" hidden></span>
   <ul class="gallery"></ul>
 
-  <script type="module" src="./main.js"></script>
+  <script type="module" src="/main.js"></script>
 </body>
+
 </html>
