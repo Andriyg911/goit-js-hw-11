@@ -1,19 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="uk">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gallery Search</title>
+  <title>GOIT JS HW-11</title>
 </head>
 
 <body>
   <form class="form">
-    <input type="text" name="search-text" placeholder="Пошук зображень..." required />
+    <label>
+      <input type="text" name="search-text" placeholder="Пошук зображень..." required />
+    </label>
     <button type="submit">Пошук</button>
   </form>
 
-  <span class="loader" hidden></span>
+  <span class="loader hidden" aria-hidden="true"></span>
+
   <ul class="gallery"></ul>
 
   <script type="module" src="./main.js"></script>

@@ -1,50 +1,50 @@
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-import 'izitoast/dist/css/iziToast.min.css';
-import iziToast from 'izitoast';
-import './css/styles.css';
+import { getImagesByQuery } from './js/pixabay-api';
+import { createGallery, clearGallery, showLoader, hideLoader } from './js/render-functions';
 
-import { getImagesByQuery } from './js/pixabay-api.js';
-import {
-  createGallery,
-  clearGallery,
-  showLoader,
-  hideLoader,
-} from './js/render-functions.js';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.querySelector('.form');
-const gallery = document.querySelector('.gallery');
-const loader = document.querySelector('.loader');
 
-form.addEventListener('submit', async e => {
-  e.preventDefault();
-  const query = e.target.elements['search-text'].value.trim();
+form.addEventListener('submit', onSearchSubmit);
 
-  if (!query) return;
+function onSearchSubmit(event) {
+  event.preventDefault();
+
+  const query = event.currentTarget.elements['search-text'].value.trim();
+
+  if (!query) {
+    iziToast.warning({
+      message: 'Please enter a search query.',
+      position: 'topRight',
+    });
+    return;
+  }
 
   clearGallery();
   showLoader();
 
-  try {
-    const { hits } = await getImagesByQuery(query); // ✅ Виправлено
+  getImagesByQuery(query)
+    .then(data => {
+      const hits = Array.isArray(data?.hits) ? data.hits : [];
 
-    if (hits.length === 0) {
-      iziToast.warning({
-        title: 'Увага',
-        message: 'Нічого не знайдено. Спробуйте інший запит.',
+      if (hits.length === 0) {
+        iziToast.info({
+          message: 'Sorry, there are no images matching your search query. Please try again!',
+          position: 'topRight',
+        });
+        return;
+      }
+
+      createGallery(hits);
+    })
+    .catch(() => {
+      iziToast.error({
+        message: 'Something went wrong while fetching images. Please try again later.',
         position: 'topRight',
       });
-    } else {
-      createGallery(hits); // ✅ Передаємо масив
-    }
-  } catch (error) {
-    iziToast.error({
-      title: 'Помилка',
-      message: 'Щось пішло не так. Спробуйте пізніше.',
-      position: 'topRight',
+    })
+    .finally(() => {
+      hideLoader();
     });
-    console.error(error);
-  } finally {
-    hideLoader();
-  }
-});
+}

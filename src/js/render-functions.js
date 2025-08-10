@@ -1,6 +1,10 @@
-const gallery = document.querySelector('.gallery');
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const lightbox = new window.SimpleLightbox('.gallery a', {
+const galleryEl = document.querySelector('.gallery');
+const loaderEl = document.querySelector('.loader');
+
+let lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
@@ -17,32 +21,35 @@ export function createGallery(images) {
         comments,
         downloads,
       }) => `
-    <li>
-      <a href="${largeImageURL}">
-        <img src="${webformatURL}" alt="${tags}" loading="lazy" />
-      </a>
-      <div class="stats">
-        <span>👍 ${likes}</span>
-        <span>👁️ ${views}</span>
-        <span>💬 ${comments}</span>
-        <span>⬇️ ${downloads}</span>
-      </div>
-    </li>`
+      <li class="gallery__item">
+        <a class="gallery__link" href="${largeImageURL}">
+          <img class="gallery__image" src="${webformatURL}" alt="${tags}" loading="lazy" />
+        </a>
+        <ul class="gallery__meta">
+          <li><b>Likes:</b> ${likes}</li>
+          <li><b>Views:</b> ${views}</li>
+          <li><b>Comments:</b> ${comments}</li>
+          <li><b>Downloads:</b> ${downloads}</li>
+        </ul>
+      </li>`
     )
     .join('');
 
-  gallery.insertAdjacentHTML('beforeend', markup);
+  // Одна операція додавання до DOM (за ТЗ)
+  galleryEl.innerHTML = markup;
+
+  // Оновити lightbox після додавання нових елементів (за ТЗ)
   lightbox.refresh();
 }
 
 export function clearGallery() {
-  gallery.innerHTML = '';
+  galleryEl.innerHTML = '';
 }
 
 export function showLoader() {
-  document.querySelector('.loader').hidden = false;
+  loaderEl.classList.remove('hidden');
 }
 
 export function hideLoader() {
-  document.querySelector('.loader').hidden = true;
+  loaderEl.classList.add('hidden');
 }
