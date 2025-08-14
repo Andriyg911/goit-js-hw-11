@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { resolve } from 'path';
 
 export default defineConfig(({ command }) => {
   const isDev = command === 'serve';
@@ -28,8 +27,7 @@ export default defineConfig(({ command }) => {
         // Explicit multi-page input
         input: {
           index:   resolve(__dirname, 'src/index.html'),
-          timer:   resolve(__dirname, 'src/1-timer.html'),
-          snackbar: resolve(__dirname, 'src/2-snackbar.html'),
+         
         },
         output: {
           // Vendors in a separate chunk
